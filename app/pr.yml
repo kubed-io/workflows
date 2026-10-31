@@ -1,6 +1,6 @@
 name: 🔀 PR
 
-# The PR's head built, and planned against the live cluster, each a job summary.
+# The PR's head built and planned, each a job summary.
 on:
   pull_request:
     branches:

@@ -1,8 +1,7 @@
 name: ☸️ Kubectl
 
-# kubectl build, plan or up of the calling repo, its output in the job summary. krm runs in
-# the kluster with the krm tools baked in; ubuntu-26.04 is GitHub's, which installs them and
-# joins the VPN. up runs in the caller's kluster environment, which admits main alone.
+# kubectl build, plan or up of the calling repo, its output in the job summary. On GitHub's
+# runners it installs the krm tools first; a self-hosted runner is expected to have them.
 on:
   workflow_call:
     inputs:
@@ -20,13 +19,17 @@ on:
         type: string
         required: false
         default: ""
+      environment:
+        description: The GitHub environment up runs in; build and plan run in none
+        type: string
+        required: false
+        default: ""
 
 jobs:
   kubectl:
     name: Kubectl
     runs-on: ${{ inputs.runner || vars.DEFAULT_RUNNER }}
-    # Only up deploys, so only up is in kluster: a PR's plan reads the cluster without it.
-    environment: ${{ inputs.cmd == 'up' && 'kluster' || '' }}
+    environment: ${{ inputs.cmd == 'up' && inputs.environment || '' }}
     # one up at a time and a newer one waits; build and plan never wait
     concurrency:
       group: >-
@@ -47,7 +50,6 @@ jobs:
       if: runner.environment == 'github-hosted'
       uses: kubed-io/actions/krm-setup@main
 
-    # in the kluster it uses the pod's own token and skips GCP and the VPN
     - name: Kluster Konnect
       if: env.CMD != 'build'
       uses: kubed-io/actions/kluster-konnect@main

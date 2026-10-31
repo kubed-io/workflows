@@ -12,6 +12,7 @@ jobs:
     uses: kubed-io/workflows/.github/workflows/kubectl.yml@main
     with:
       cmd: up
+      environment: ${{ vars.DEPLOY_ENVIRONMENT }}
     permissions:
       contents: read
       id-token: write
