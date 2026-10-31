@@ -1,0 +1,35 @@
+name: ☸️ Kubectl
+
+# kubectl build, plan or up on demand, on the runner picked: krm (the kluster) or
+# ubuntu-26.04 (GitHub's, over the VPN).
+on:
+  workflow_dispatch:
+    inputs:
+      cmd:
+        description: kubectl build, plan or up
+        type: choice
+        required: true
+        default: build
+        options:
+        - build
+        - plan
+        - up
+      runner:
+        description: krm (the kluster) or ubuntu-26.04 (GitHub's, over the VPN)
+        type: choice
+        required: true
+        default: krm
+        options:
+        - krm
+        - ubuntu-26.04
+
+jobs:
+  kubectl:
+    name: Kubectl
+    uses: kubed-io/workflows/.github/workflows/kubectl.yml@main
+    with:
+      cmd: ${{ inputs.cmd }}
+      runner: ${{ inputs.runner }}
+    permissions:
+      contents: read
+      id-token: write

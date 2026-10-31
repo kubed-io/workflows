@@ -1,0 +1,17 @@
+name: 🚀 Deploy
+
+# A merge to main ships: kubectl up, through kubed-io/workflows.
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  deploy:
+    name: Deploy
+    uses: kubed-io/workflows/.github/workflows/kubectl.yml@main
+    with:
+      cmd: up
+    permissions:
+      contents: read
+      id-token: write
